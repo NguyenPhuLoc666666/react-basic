@@ -1,20 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 
 function FormAddTodo({ handleAddTodo }) {
-  const handleAddTodoInForm = (e) => {
-    e.preventDefault();
-    const generatedId = generateId();
-    let title = document.getElementById("input-todo").value;
-    if (title === "") {
-      alert("Please enter complete information when add new todo!");
-      return;
-    }
-    handleAddTodo({ generatedId, title });
-  };
   const generateId = () => {
     const timestamp = Date.now().toString();
     const rand = Math.floor(Math.random() * 1000);
     return timestamp + "-" + rand;
+  };
+
+  const [todo, setTodo] = useState({
+    id: "0",
+    title: "",
+  });
+
+  const handleAddTodoInForm = (e) => {
+    e.preventDefault();
+    if (todo.title === "") {
+      alert("Please enter complete information when add new todo!");
+      return;
+    }
+    const generatedId = generateId();
+    const updatedTodo = { ...todo, id: generatedId };
+    setTodo(updatedTodo);
+    handleAddTodo(updatedTodo);
   };
 
   return (
@@ -30,6 +37,10 @@ function FormAddTodo({ handleAddTodo }) {
             id="input-todo"
             placeholder="Add todo..."
             className="rounded px-4"
+            value={todo.title}
+            onChange={(e) => {
+              setTodo({ ...todo, title: e.target.value });
+            }}
           />
         </div>
       </div>

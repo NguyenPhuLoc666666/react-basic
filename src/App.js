@@ -31,9 +31,10 @@ function App() {
   }, []);
 
   const handleAddTodo = (newTodo) => {
-    setTodos([...todos, newTodo]);
-    localStorage.setItem("todolist", JSON.stringify(todos));
-    alert(`Add new todo: "${newTodo.title}" successfully!`);
+    const updatedTodos = [...todos, newTodo];
+    setTodos(updatedTodos);
+    localStorage.setItem("todolist", JSON.stringify(updatedTodos));
+    alert(`Added new todo: "${newTodo.title}" successfully!`);
   };
 
   return (
