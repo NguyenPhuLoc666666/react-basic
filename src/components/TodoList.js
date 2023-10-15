@@ -5,7 +5,7 @@ function TodoList({ props }) {
   return (
     <ul className="w-full px-4 py-2">
       {props.map((task, index) => (
-        <TodoTask key={index} props={task} index={index} />
+        <TodoTask key={index} task={task} index={index} />
       ))}
     </ul>
   );
