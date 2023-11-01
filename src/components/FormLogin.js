@@ -10,15 +10,8 @@ export default function FormLogin({ setIsLogin }) {
       .string()
       .email({ message: "Invalid email address." })
       .min(1, { message: "Email is required" })
-      .trim()
-      .toLowerCase(),
-    password: z
-      .string()
-      .min(8, { message: "Password must be at least 8 characters." })
-      .max(20, { message: "Password max length is 20 characters." })
-      .regex(/^(?=.*[A-Z])(?=.*[@#$%^&-+=()]).+$/, {
-        message: "Password must be at least 1 uppercase and 1 symbol.",
-      }),
+      .trim(),
+    password: z.string(),
   });
 
   const form = useForm({
@@ -32,11 +25,33 @@ export default function FormLogin({ setIsLogin }) {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = form;
 
-  const onSubmit = (data) => {
-    setIsLogin(true);
+  const onSubmit = async (data) => {
+    const email = data.email;
+    const password = data.password;
+
+    fetch("http://localhost:4000/api/v1/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setIsLogin(true);
+      })
+      .catch((error) => {
+        console.error(">>>>>" + error);
+        setError("email", { message: "Email or password is wrong" });
+      });
   };
 
   return (
@@ -54,6 +69,7 @@ export default function FormLogin({ setIsLogin }) {
             Email (<span className="text-red-500">*</span>)
           </label>
           <input
+            type="email"
             className={`text-black text-lg rounded p-1 border-solid w-[300px] border-2
               ${
                 errors.email?.message !== undefined
@@ -69,6 +85,7 @@ export default function FormLogin({ setIsLogin }) {
             Password (<span className="text-red-500">*</span>)
           </label>
           <input
+            type="password"
             className={`text-black text-lg rounded p-1 border-solid w-[300px] border-2
                ${
                  errors.password?.message !== undefined
