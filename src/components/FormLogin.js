@@ -32,26 +32,27 @@ export default function FormLogin({ setIsLogin }) {
   const onSubmit = async (data) => {
     const email = data.email;
     const password = data.password;
-
-    fetch("http://localhost:4000/api/v1/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    try {
+      let response = await fetch("http://localhost:4000/api/v1/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+      if (response.status === 200) {
+        let data = await response.json();
         console.log(data);
         setIsLogin(true);
-      })
-      .catch((error) => {
-        console.error(">>>>>" + error);
-        setError("email", { message: "Email or password is wrong" });
-      });
+      } else {
+        throw "Error fetching users list";
+      }
+    } catch (error) {
+      setError("email", { message: "Email or password is wrong" });
+    }
   };
 
   return (
